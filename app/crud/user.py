@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User, Driver, Mechanic
 from app.schemas.user import UserCreateData, DriverCreateData
 
+
 def get_user_by_login_crud(session, username):
     get_user_query = select(User).where(User.username == username)
     user_from_table = session.scalar(get_user_query)
@@ -12,6 +13,7 @@ def get_user_by_login_crud(session, username):
         raise HTTPException(status_code=400,
                             detail=f"Пользователя с переданным логином - '{username}' не существует")
     return user_from_table
+
 
 def create_user_crud(session: Session, user_data: UserCreateData):
     """Создать пользователя"""
@@ -30,16 +32,14 @@ def create_user_crud(session: Session, user_data: UserCreateData):
     session.refresh(user)
     return user
 
+
 def check_user_not_exist(session, user_data):
     get_user_query = select(User).where(User.username == user_data.username)
     user_from_table = session.scalar(get_user_query)
     if user_from_table:
         raise HTTPException(status_code=400,
-                            detail=f"Пользователя с переданным логином - '{user_data.username}' уже существует. "
+                            detail=f"Пользователь с переданным логином - '{user_data.username}' уже существует. "
                                    f"Поменяйте поле 'username' чтобы продолжить")
-        return None
-
-
 
 
 def create_driver_crud(session: Session, user, driver_data: DriverCreateData):
@@ -56,8 +56,9 @@ def create_mechanic_crud(session: Session, user):
     mechanic = Mechanic(id=user.id)
     session.add(mechanic)
     session.commit()
-    #session.refresh(mechanic)
+    # session.refresh(mechanic)
     return mechanic
+
 
 def deactivate_user_crud(session, username):
     """Деактивировать пользователя"""
@@ -78,6 +79,7 @@ def get_list_users_crud(session):
     users_from_table = session.scalars(get_users_query).all()
     return users_from_table
 
+
 def get_driver_by_user_login(session, user):
     get_driver_query = select(Driver).where(Driver.id == user.id)
     driver_from_table = session.scalar(get_driver_query)
@@ -86,6 +88,7 @@ def get_driver_by_user_login(session, user):
                             detail=f"Водителя  - '{user.username}' не существует,"
                                    f" пользователь имеет роль {user.role_name}")
     return driver_from_table
+
 
 def update_driver_crud(session, driver_fields):
     """Обновить поля водителя"""
