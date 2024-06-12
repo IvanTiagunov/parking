@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.crud.auth import get_us
 from app.crud.user import create_user_crud, create_driver_crud, create_mechanic_crud, deactivate_user_crud, \
-    get_list_users_crud, update_driver_crud
+    get_list_users_crud, update_driver_crud, update_user_crud
 from app.db.database import get_db
 from app.enums import Role
 from app.schemas.user import DriverCreateData, MechanicCreateData, AdminCreateData, DriverUpdateData, UserUpdateFields
@@ -59,7 +59,7 @@ async def get_user_list(user: get_us, session: Session = Depends(get_db)):
     all_users = get_list_users_crud(session)
     return all_users
 
-@router.post("user/update")
+@router.post("/user/update")
 async def update_user_data(user: get_us, user_fields: UserUpdateFields,
                                         session: Session = Depends(get_db)):
     if user.role_name != Role.admin:
@@ -69,7 +69,7 @@ async def update_user_data(user: get_us, user_fields: UserUpdateFields,
     return user
 
 
-@router.post("driver/update")
+@router.post("/driver/update")
 async def update_driver_car_access_type(user: get_us, driver_fields: DriverUpdateData,
                                         session: Session = Depends(get_db)):
     if user.role_name != Role.admin:
