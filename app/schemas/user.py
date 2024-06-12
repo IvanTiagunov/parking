@@ -48,6 +48,7 @@ class DriverUpdateData(BaseModel):
     car_access_type: Union[CarAccessType, None]
 
 class UserUpdateFields(BaseModel):
+    username: str
     fullname: Union[str, None]
     job_title: Union[str, None]
     date_of_employment: Union[datetime.date, None]
