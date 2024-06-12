@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+from sqlalchemy import update, select
 from sqlalchemy.orm import Session
 
 from app.models.user import User, Driver, Mechanic
@@ -37,3 +39,22 @@ def create_mechanic_crud(session: Session, user):
     session.commit()
     session.refresh(mechanic)
     return mechanic
+
+def deactivate_user_crud(session, username):
+    """Деактивировать пользователя"""
+    get_user_query = select(User).where(User.username == username)
+    user_from_table = session.scalar(get_user_query)
+    if not user_from_table:
+        raise HTTPException(status_code=400,
+                            detail=f"Пользователя с переданным логином - '{username}' не существует")
+
+    update_st = update(User).where(User.username == username).values(is_active=False).returning(User)
+    result = session.scalar(update_st)
+    session.commit()
+    return result
+
+
+def get_list_users_crud(session):
+    get_users_query = select(User)
+    users_from_table = session.scalars(get_users_query).all()
+    return users_from_table
