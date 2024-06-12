@@ -40,3 +40,4 @@ class AdminCreateData(UserCreateData):
 
 class MechanicCreateData(UserCreateData):
     role_name: Role.mechanic
+

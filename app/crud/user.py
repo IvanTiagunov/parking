@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from app.models.user import User, Driver
-from app.schemas.user import UserCreateData, DriverCreateData
+from app.models.user import User, Driver, Mechanic
+from app.schemas.user import UserCreateData, DriverCreateData, MechanicCreateData
 
 
 def create_user_crud(session: Session, user_data:UserCreateData):
@@ -27,3 +27,11 @@ def create_driver_crud(session: Session, user, driver_data: DriverCreateData):
     session.commit()
     session.refresh(driver)
     return user
+
+def create_mechanic_crud(session: Session, user):
+    """Создать механика"""
+    mechanic = Mechanic(id=user.id)
+    session.add(mechanic)
+    session.commit()
+    session.refresh(mechanic)
+    return mechanic
