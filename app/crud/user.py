@@ -31,15 +31,14 @@ def create_user_crud(session: Session, user_data: UserCreateData):
     return user
 
 def check_user_not_exist(session, user_data):
-    try:
-        user = get_user_by_login_crud(session, user_data.username)
-        if user:
-            raise HTTPException(status_code=400,
-                                detail=f"Пользователя с переданным логином - '{user.username}' уже существует. "
-                                       f"Поменяйте поле 'username' чтобы продолжить")
+    get_user_query = select(User).where(User.username == user_data.username)
+    user_from_table = session.scalar(get_user_query)
+    if user_from_table:
+        raise HTTPException(status_code=400,
+                            detail=f"Пользователя с переданным логином - '{user_data.username}' уже существует. "
+                                   f"Поменяйте поле 'username' чтобы продолжить")
         return None
-    except HTTPException:
-        print("Пользователя не существует как и планировалось")
+
 
 
 

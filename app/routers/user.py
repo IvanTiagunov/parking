@@ -48,8 +48,8 @@ async def deactivate_user(user: get_us, user_login_to_deactivate: str, session: 
     if user.role_name != Role.admin:
         return HTTPException(status_code=401,
                              detail="Недостаточно прав. Деактивировать пользователей может только администратор")
-    user = deactivate_user_crud(session, user_login_to_deactivate)
-    return {"Пользователь успешно деактивирован": {user}}
+    deactivate_user_crud(session, user_login_to_deactivate)
+    return {"Успешно деактивирован пользователь с логином": {user_login_to_deactivate}}
 
 
 @router.get("/user/get_list", tags=['get_info'])
