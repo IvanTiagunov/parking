@@ -1,10 +1,9 @@
 import datetime
 import uuid
 from typing import Union
+from pydantic import BaseModel, Field
 
-from pydantic import BaseModel
-
-from app.models.user import Role, CarAccessType
+from app.enums import Role, CarAccessType
 
 
 class UserSchemaPublic(BaseModel):
@@ -22,6 +21,7 @@ class UserSchemaFull(UserSchemaPublic):
     password: str
     token_value: uuid.UUID
 
+
 class UserCreateData(BaseModel):
     username: str
     password: str
@@ -33,12 +33,13 @@ class UserCreateData(BaseModel):
 
 
 class DriverCreateData(UserCreateData):
-    role_name: Role.driver
+    role_name: Role = Field(default=Role.driver)
     car_access_type: CarAccessType
 
+
 class AdminCreateData(UserCreateData):
-    role_name: Role.admin
+    role_name: Role = Field(default=Role.admin)
+
 
 class MechanicCreateData(UserCreateData):
-    role_name: Role.mechanic
-
+    role_name: Role = Field(default=Role.mechanic)

@@ -2,11 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session, session
 
 from app.crud.auth import get_user_by_username_and_password, get_us
 from app.db.database import get_db
-from app.models.user import User
 
 router = APIRouter()
 

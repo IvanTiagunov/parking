@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 
 from app.models.user import User, Driver, Mechanic
-from app.schemas.user import UserCreateData, DriverCreateData, MechanicCreateData
+from app.schemas.user import UserCreateData, DriverCreateData
 
 
-def create_user_crud(session: Session, user_data:UserCreateData):
+def create_user_crud(session: Session, user_data: UserCreateData):
     """Создать пользователя"""
     user = User(username=user_data.username,
                 password=user_data.password,
@@ -20,6 +20,7 @@ def create_user_crud(session: Session, user_data:UserCreateData):
     session.refresh(user)
     return user
 
+
 def create_driver_crud(session: Session, user, driver_data: DriverCreateData):
     """Создать водителя"""
     driver = Driver(id=user.id, car_access_type=driver_data.car_access_type)
@@ -27,6 +28,7 @@ def create_driver_crud(session: Session, user, driver_data: DriverCreateData):
     session.commit()
     session.refresh(driver)
     return user
+
 
 def create_mechanic_crud(session: Session, user):
     """Создать механика"""

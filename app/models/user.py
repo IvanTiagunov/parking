@@ -1,23 +1,11 @@
 import uuid
 from datetime import datetime
-from enum import Enum
 from sqlalchemy import String, Boolean, ForeignKey, UniqueConstraint, Date
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.database import Base
+from app.enums import Role, CarAccessType
 
-
-class Role(Enum):
-    admin: str = "админ"
-    driver: str = "водитель"
-    mechanic: str = "механик"
-
-
-class CarAccessType(Enum):
-    no_access: str = "no_access"
-    passanger_access: str = "passanger_access"
-    truck_access: str = "truck_access"
-    all_access: str = "all_access"
 
 
 class User(Base):
