@@ -31,6 +31,7 @@ class UserCreateData(BaseModel):
     date_of_dismissal: Union[datetime.date, None]
     is_active: bool
 
+
 class DriverCreateData(UserCreateData):
     role_name: Role.driver
     car_access_type: CarAccessType
