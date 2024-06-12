@@ -66,33 +66,35 @@ def get_list_users_crud(session):
     users_from_table = session.scalars(get_users_query).all()
     return users_from_table
 
-def check_driver_exist(session, user):
+def get_driver_by_user_login(session, user):
     get_driver_query = select(Driver).where(Driver.id == user.id)
     driver_from_table = session.scalar(get_driver_query)
     if not driver_from_table:
         raise HTTPException(status_code=400,
                             detail=f"Водителя  - '{user.username}' не существует,"
                                    f" пользователь имеет роль {user.role_name}")
+    return driver_from_table
 
 def update_driver_crud(session, driver_fields):
     """Обновить поля водителя"""
     user = get_user_by_login_crud(session, driver_fields.username)
-    check_driver_exist(session, user)
+    get_driver_by_user_login(session, user)
 
     update_st = update(Driver).where(Driver.id == user.id).values(
         car_access_type=driver_fields.car_access_type
     ).returning(Driver)
-    result = session.scalar(update_st)
+    session.execute(update_st)
     session.commit()
-    return result
+    updated_driver = get_driver_by_user_login(session, user)
+    return updated_driver
 
 
-def update_user_crud(session, user_data):
+def update_user_crud(session: Session, user_data):
     user = get_user_by_login_crud(session, user_data.username)
-
     update_st = update(User).where(User.id == user.id).values(
-        **user_data
+        **user_data.model_dump()
     ).returning(User)
-    result = session.scalar(update_st)
+    session.execute(update_st)
     session.commit()
-    return result
+    new_user = get_user_by_login_crud(session, user_data.username)
+    return new_user
