@@ -17,7 +17,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     return {"access_token": token, "token_type": "bearer"}
 
 
-@router.get("/me")
+@router.get("/me", tags=['get_info'])
 async def read_user_me(user: get_us):
     """Получение текущего пользователя"""
     return user

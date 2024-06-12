@@ -15,6 +15,7 @@ def get_user_by_login_crud(session, username):
 
 def create_user_crud(session: Session, user_data: UserCreateData):
     """Создать пользователя"""
+    check_user_not_exist(session, user_data)
     user = User(username=user_data.username,
                 password=user_data.password,
                 fullname=user_data.fullname,
@@ -29,14 +30,26 @@ def create_user_crud(session: Session, user_data: UserCreateData):
     session.refresh(user)
     return user
 
+def check_user_not_exist(session, user_data):
+    try:
+        user = get_user_by_login_crud(session, user_data.username)
+        if user:
+            raise HTTPException(status_code=400,
+                                detail=f"Пользователя с переданным логином - '{user.username}' уже существует. "
+                                       f"Поменяйте поле 'username' чтобы продолжить")
+        return None
+    except HTTPException:
+        print("Пользователя не существует как и планировалось")
+
+
 
 def create_driver_crud(session: Session, user, driver_data: DriverCreateData):
     """Создать водителя"""
     driver = Driver(id=user.id, car_access_type=driver_data.car_access_type)
     session.add(driver)
     session.commit()
-    session.refresh(driver)
-    return user
+    #session.refresh(driver)
+    return driver
 
 
 def create_mechanic_crud(session: Session, user):
@@ -44,7 +57,7 @@ def create_mechanic_crud(session: Session, user):
     mechanic = Mechanic(id=user.id)
     session.add(mechanic)
     session.commit()
-    session.refresh(mechanic)
+    #session.refresh(mechanic)
     return mechanic
 
 def deactivate_user_crud(session, username):
@@ -98,3 +111,12 @@ def update_user_crud(session: Session, user_data):
     session.commit()
     new_user = get_user_by_login_crud(session, user_data.username)
     return new_user
+
+
+def get_user_by_id_crud(session, user_id):
+    query = select(User).where(User.id == user_id)
+    user_from_table = session.scalar(query)
+    if not user_from_table:
+        raise HTTPException(status_code=400,
+                            detail=f"Пользователя с переданным id - '{user_id}' не существует")
+    return user_from_table
