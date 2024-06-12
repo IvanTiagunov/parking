@@ -3,6 +3,5 @@ services:
     build: .
     ports:
       - 8001:8000
-      - 5556:5555
     volumes:
       - .:/app

@@ -5,6 +5,13 @@ from sqlalchemy.orm import Session
 from app.models.user import User, Driver, Mechanic
 from app.schemas.user import UserCreateData, DriverCreateData
 
+def get_user_by_login_crud(session, username):
+    get_user_query = select(User).where(User.username == username)
+    user_from_table = session.scalar(get_user_query)
+    if not user_from_table:
+        raise HTTPException(status_code=400,
+                            detail=f"Пользователя с переданным логином - '{username}' не существует")
+    return user_from_table
 
 def create_user_crud(session: Session, user_data: UserCreateData):
     """Создать пользователя"""
@@ -58,3 +65,34 @@ def get_list_users_crud(session):
     get_users_query = select(User)
     users_from_table = session.scalars(get_users_query).all()
     return users_from_table
+
+def check_driver_exist(session, user):
+    get_driver_query = select(Driver).where(Driver.id == user.id)
+    driver_from_table = session.scalar(get_driver_query)
+    if not driver_from_table:
+        raise HTTPException(status_code=400,
+                            detail=f"Водителя  - '{user.username}' не существует,"
+                                   f" пользователь имеет роль {user.role_name}")
+
+def update_driver_crud(session, driver_fields):
+    """Обновить поля водителя"""
+    user = get_user_by_login_crud(session, driver_fields.username)
+    check_driver_exist(session, user)
+
+    update_st = update(Driver).where(Driver.id == user.id).values(
+        car_access_type=driver_fields.car_access_type
+    ).returning(Driver)
+    result = session.scalar(update_st)
+    session.commit()
+    return result
+
+
+def update_user_crud(session, user_data):
+    user = get_user_by_login_crud(session, user_data.username)
+
+    update_st = update(User).where(User.id == user.id).values(
+        **user_data
+    ).returning(User)
+    result = session.scalar(update_st)
+    session.commit()
+    return result

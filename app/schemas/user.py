@@ -43,3 +43,12 @@ class AdminCreateData(UserCreateData):
 
 class MechanicCreateData(UserCreateData):
     role_name: Role = Field(default=Role.mechanic)
+
+class DriverUpdateData(BaseModel):
+    car_access_type: Union[CarAccessType, None]
+
+class UserUpdateFields(BaseModel):
+    fullname: Union[str, None]
+    job_title: Union[str, None]
+    date_of_employment: Union[datetime.date, None]
+    date_of_dismissal: Union[datetime.date, None]
