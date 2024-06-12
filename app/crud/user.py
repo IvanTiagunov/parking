@@ -47,7 +47,7 @@ def create_driver_crud(session: Session, user, driver_data: DriverCreateData):
     driver = Driver(id=user.id, car_access_type=driver_data.car_access_type)
     session.add(driver)
     session.commit()
-    #session.refresh(driver)
+    session.refresh(driver)
     return driver
 
 
