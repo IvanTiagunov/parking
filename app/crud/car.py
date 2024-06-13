@@ -42,7 +42,7 @@ def create_car_crud(session: Session, car_data: CarData):
 def update_car_crud(session: Session, car_data: CarUpdateData):
     """Обновление машины по id"""
     check_car_exist_by_id(session, car_data)
-
+    check_car_not_exist_by_number(session, car_data.number)
     update_stmt = (
         update(Car)
         .where(Car.id == car_data.id)
