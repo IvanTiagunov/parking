@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.crud.auth import get_us
 from app.crud.user import create_user_crud, create_driver_crud, create_mechanic_crud, deactivate_user_crud, \
     get_list_users_crud, update_driver_crud, update_user_crud, check_user_not_exist, get_user_by_id_crud, \
-    get_user_by_login_crud, get_driver_by_user_login
+    get_user_by_login_crud, get_driver_by_user
 from app.db.database import get_db
 from app.dependencies import check_rights
 from app.enums import Role
@@ -116,7 +116,7 @@ async def get_driver_by_name(user: get_us, username: str, session: Session = Dep
     check_rights(user, roles=[Role.admin],
                  error_msg="Обновить тип доступа к машинам у водителя может только администратор")
     driver_user = get_user_by_login_crud(session, username)
-    driver = get_driver_by_user_login(session, driver_user)
+    driver = get_driver_by_user(session, driver_user)
     return DriverDataFromDBResponse(id=driver.id,
                                     car_access_type=driver.car_access_type,
                                     username=driver_user.username,

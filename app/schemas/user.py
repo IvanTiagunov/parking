@@ -35,8 +35,15 @@ class DriverCreateData(UserCreateData):
     role_name: Role = Role.driver
     car_access_type: CarAccessType
 
+
 class DriverDataFromDBResponse(DriverCreateData):
     id: int
+
+
+class DriverInDB(BaseModel):
+    id: int
+    role_name: Role = Role.driver
+    car_access_type: CarAccessType
 
 
 class DriverCreateResponseData(UserCreateData):
@@ -51,8 +58,10 @@ class AdminCreateData(UserCreateData):
 class MechanicCreateData(UserCreateData):
     role_name: Role = Role.mechanic
 
+
 class MechanicCreateDataResponse(UserCreateData):
     id: int
+
 
 class DriverUpdateData(BaseModel):
     username: str

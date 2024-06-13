@@ -18,3 +18,11 @@ class CarDataResponse(CarData):
 
 class CarUpdateData(CarData):
     id: int
+
+class CarInDB(BaseModel):
+    id: int
+    number: str
+    type: CarType
+    manufacture_date: datetime.date
+    location_status: CarLocation
+    repair_status: RepairStatus

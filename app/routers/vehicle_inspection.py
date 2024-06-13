@@ -2,15 +2,13 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.crud.auth import get_us
-from app.crud.car import create_car_crud, update_car_crud, get_list_car_crud, get_car_by_id_crud
+from app.crud.car import get_car_by_id_crud
 from app.crud.user import get_user_by_id_crud
 from app.crud.vehicle_inspection import create_vi_crud, get_list_vi_crud, get_vi_info_by_id_crud
 from app.db.database import get_db
 from app.dependencies import check_rights
 from app.enums import Role
-from app.schemas.car import CarData, CarDataResponse, CarUpdateData
-from app.schemas.vehicle_inspection import VehicleInspectionDataResponse, \
-    VehicleInspectionCreateWithCarNumber, VIFromDB, VehicleInspectionFull
+from app.schemas.vehicle_inspection import VehicleInspectionCreateWithCarNumber, VIFromDB, VehicleInspectionFull
 
 router = APIRouter(tags=['vehicle_inspection'])
 

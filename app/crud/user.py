@@ -80,7 +80,7 @@ def get_list_users_crud(session):
     return users_from_table
 
 
-def get_driver_by_user_login(session, user):
+def get_driver_by_user(session, user):
     get_driver_query = select(Driver).where(Driver.id == user.id)
     driver_from_table = session.scalar(get_driver_query)
     if not driver_from_table:
@@ -93,7 +93,7 @@ def get_driver_by_user_login(session, user):
 def update_driver_crud(session, driver_fields):
     """Обновить права водителя"""
     user = get_user_by_login_crud(session, driver_fields.username)
-    driver = get_driver_by_user_login(session, user)
+    driver = get_driver_by_user(session, user)
 
     update_stmt = (
         update(Driver)
