@@ -18,7 +18,7 @@ class User(Base):
     fullname: Mapped[str] = mapped_column(String(length=320), nullable=True)
     job_title: Mapped[str] = mapped_column(String(length=320), nullable=True)
     date_of_employment: Mapped[datetime] = mapped_column(Date, nullable=True)
-    date_of_dismissal: Mapped[datetime] = mapped_column(Date, nullable=True)
+    date_of_dismissal: Mapped[datetime] = mapped_column(Date, nullable=True, default=None)
     token_value: Mapped[uuid.UUID] = mapped_column(unique=True, default=uuid.uuid4)
 
     role_name: Mapped[Role]
