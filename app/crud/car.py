@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 
 from app.models.user import User, Driver, Mechanic
 from app.models.car import Car
-from app.schemas.car import CarCreateData
+from app.schemas.car import CarData, CarUpdateData
 
 
-def check_car_not_exist(session, car_data):
+def check_car_not_exist_by_number(session, car_data):
     car_query = select(Car).where(Car.number == car_data.number)
     car_from_table = session.scalar(car_query)
     if car_from_table:
@@ -15,9 +15,18 @@ def check_car_not_exist(session, car_data):
                             detail=f"Машина с переданным номером - '{car_data.number}' уже существует. "
                                    f"Поменяйте поле 'number' чтобы продолжить")
 
+def check_car_exist_by_id(session, car_data):
+    car_query = select(Car).where(Car.number == car_data.number)
+    car_from_table = session.scalar(car_query)
+    if not car_from_table:
+        raise HTTPException(status_code=400,
+                            detail=f"Машина с переданным идентификатором - '{car_data.number}' не существует. "
+                                   f"Поменяйте поле 'id' чтобы продолжить")
 
-def create_car_crud(session: Session, car_data: CarCreateData):
-    check_car_not_exist(session, car_data)
+
+def create_car_crud(session: Session, car_data: CarData):
+    """Созданги"""
+    check_car_not_exist_by_number(session, car_data)
     car = Car(
         number=car_data.number,
         type=car_data.type,
@@ -30,3 +39,22 @@ def create_car_crud(session: Session, car_data: CarCreateData):
     session.refresh(car)
     return car
 
+def update_car_crud(session: Session, car_data: CarUpdateData):
+    """Обновление машины по id"""
+    check_car_exist_by_id(session, car_data)
+
+    update_stmt = (
+        update(Car)
+        .where(Car.id == car_data.id)
+        .values(**car_data.model_dump())
+    ).returning(Car)
+
+    updated_car = session.execute(update_stmt).scalar_one()
+    session.commit()
+    return updated_car
+
+def get_list_car_crud(session: Session):
+    """Получение списка машин"""
+    get_cars_query = select(Car)
+    cars_from_table = session.scalars(get_cars_query).all()
+    return cars_from_table

@@ -9,10 +9,10 @@ class Role(Enum):
 
 
 class CarAccessType(Enum):
-    no_access: str = "no_access"
-    passanger_access: str = "passanger_access"
-    truck_access: str = "truck_access"
-    all_access: str = "all_access"
+    no_access: str = "нет прав"
+    passanger_access: str = "легковые"
+    truck_access: str = "грузовые"
+    all_access: str = "все права"
 
 
 class CarType(Enum):

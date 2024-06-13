@@ -6,12 +6,15 @@ from pydantic import BaseModel
 from app.enums import CarType, CarLocation, RepairStatus
 
 
-class CarCreateData(BaseModel):
+class CarData(BaseModel):
     number: str
     type: CarType
     manufacture_date: datetime.date
     location_status: CarLocation
     repair_status: RepairStatus
 
-class CarCreateDataResponse(CarCreateData):
+class CarDataResponse(CarData):
+    id: int
+
+class CarUpdateData(CarData):
     id: int

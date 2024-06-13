@@ -8,7 +8,7 @@ from app.schemas.user import UserCreateData, DriverCreateData
 
 def get_user_by_login_crud(session, username):
     get_user_query = select(User).where(User.username == username)
-    user_from_table = session.scalar(get_user_query)
+    user_from_table = session.execute(get_user_query).scalar_one()
     if not user_from_table:
         raise HTTPException(status_code=400,
                             detail=f"Пользователя с переданным логином - '{username}' не существует")
@@ -56,7 +56,7 @@ def create_mechanic_crud(session: Session, user):
     mechanic = Mechanic(id=user.id)
     session.add(mechanic)
     session.commit()
-    # session.refresh(mechanic)
+    session.refresh(mechanic)
     return mechanic
 
 
@@ -91,28 +91,34 @@ def get_driver_by_user_login(session, user):
 
 
 def update_driver_crud(session, driver_fields):
-    """Обновить поля водителя"""
+    """Обновить права водителя"""
     user = get_user_by_login_crud(session, driver_fields.username)
-    get_driver_by_user_login(session, user)
+    driver = get_driver_by_user_login(session, user)
 
-    update_st = update(Driver).where(Driver.id == user.id).values(
-        car_access_type=driver_fields.car_access_type
+    update_stmt = (
+        update(Driver)
+        .where(Driver.id == driver.id)
+        .values(car_access_type=driver_fields.car_access_type)
     ).returning(Driver)
-    session.execute(update_st)
+
+    updated_driver = session.execute(update_stmt).scalar_one()
+    car_access_field = updated_driver.car_access_type
     session.commit()
-    updated_driver = get_driver_by_user_login(session, user)
-    return updated_driver
+    return car_access_field
 
 
 def update_user_crud(session: Session, user_data):
     user = get_user_by_login_crud(session, user_data.username)
-    update_st = update(User).where(User.id == user.id).values(
-        **user_data.model_dump()
+
+    update_stmt = (
+        update(User)
+        .where(User.id == user.id)
+        .values(**user_data.model_dump())
     ).returning(User)
-    session.execute(update_st)
+
+    updated_user = session.execute(update_stmt).scalar()
     session.commit()
-    new_user = get_user_by_login_crud(session, user_data.username)
-    return new_user
+    return updated_user
 
 
 def get_user_by_id_crud(session, user_id):

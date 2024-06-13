@@ -49,6 +49,7 @@ class MechanicCreateData(UserCreateData):
     role_name: Role = Role.mechanic
 
 class DriverUpdateData(BaseModel):
+    username: str
     car_access_type: Union[CarAccessType, None]
 
 class UserUpdateFields(BaseModel):

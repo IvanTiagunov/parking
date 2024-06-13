@@ -16,8 +16,8 @@ def check_active(user):
     if not user.is_active:
         raise HTTPException(status_code=401,
                              detail=f"Недостаточно прав. Пользователь деактивирован")
-def check_admin(user, error_msg):
-    if user.role_name != Role.admin:
+def check_rights(user, roles, error_msg):
+    if user.role_name not in roles:
         raise HTTPException(status_code=401,
                              detail=f"Недостаточно прав. {error_msg}")
     check_active(user)
