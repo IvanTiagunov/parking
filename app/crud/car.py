@@ -2,7 +2,6 @@ from fastapi import HTTPException
 from sqlalchemy import update, select
 from sqlalchemy.orm import Session
 
-from app.models.user import User, Driver, Mechanic
 from app.models.car import Car
 from app.schemas.car import CarData, CarUpdateData
 
@@ -25,7 +24,7 @@ def check_car_exist_by_id(session, car_data):
 
 
 def create_car_crud(session: Session, car_data: CarData):
-    """Созданги"""
+    """Создание"""
     check_car_not_exist_by_number(session, car_data)
     car = Car(
         number=car_data.number,
@@ -42,7 +41,6 @@ def create_car_crud(session: Session, car_data: CarData):
 def update_car_crud(session: Session, car_data: CarUpdateData):
     """Обновление машины по id"""
     check_car_exist_by_id(session, car_data)
-    check_car_not_exist_by_number(session, car_data.number)
     update_stmt = (
         update(Car)
         .where(Car.id == car_data.id)
@@ -58,3 +56,22 @@ def get_list_car_crud(session: Session):
     get_cars_query = select(Car)
     cars_from_table = session.scalars(get_cars_query).all()
     return cars_from_table
+
+def get_car_by_number_crud(session, number):
+    car_query = select(Car).where(Car.number == number)
+    car_from_table = session.scalar(car_query)
+    if not car_from_table:
+        raise HTTPException(status_code=400,
+                            detail=f"Машина с переданным номером - '{number}' не существует. "
+                                   f"Поменяйте поле 'number' чтобы продолжить")
+    return car_from_table
+
+
+def get_car_by_id_crud(session, car_id):
+    car_query = select(Car).where(Car.id == car_id)
+    car_from_table = session.scalar(car_query)
+    if not car_from_table:
+        raise HTTPException(status_code=400,
+                            detail=f"Машина с переданным идентификатором - '{car_id}' не существует. "
+                                   f"Поменяйте поле 'car_id' чтобы продолжить")
+    return car_from_table

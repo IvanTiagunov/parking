@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.crud.auth import get_us
-from app.crud.car import create_car_crud, update_car_crud, get_list_car_crud
+from app.crud.car import create_car_crud, update_car_crud, get_list_car_crud, get_car_by_id_crud
 from app.db.database import get_db
 from app.dependencies import check_rights
 from app.enums import Role
@@ -27,3 +27,8 @@ async def update_car(user: get_us, car_data: CarUpdateData, session: Session = D
 async def get_list_cars(user: get_us, session: Session = Depends(get_db)):
     cars = get_list_car_crud(session)
     return cars
+
+@router.get("/car/get_info_by_id", response_model=CarDataResponse)
+async def get_car_info_by_id(user: get_us, car_id:int, session: Session = Depends(get_db)):
+    car = get_car_by_id_crud(session, car_id)
+    return car

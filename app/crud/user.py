@@ -8,7 +8,7 @@ from app.schemas.user import UserCreateData, DriverCreateData
 
 def get_user_by_login_crud(session, username):
     get_user_query = select(User).where(User.username == username)
-    user_from_table = session.execute(get_user_query).scalar_one()
+    user_from_table = session.scalar(get_user_query)
     if not user_from_table:
         raise HTTPException(status_code=400,
                             detail=f"Пользователя с переданным логином - '{username}' не существует")
@@ -101,10 +101,9 @@ def update_driver_crud(session, driver_fields):
         .values(car_access_type=driver_fields.car_access_type)
     ).returning(Driver)
 
-    updated_driver = session.execute(update_stmt).scalar_one()
-    car_access_field = updated_driver.car_access_type
+    updated_driver_rights = session.execute(update_stmt).scalar_one()
     session.commit()
-    return car_access_field
+    return updated_driver_rights
 
 
 def update_user_crud(session: Session, user_data):
@@ -128,3 +127,4 @@ def get_user_by_id_crud(session, user_id):
         raise HTTPException(status_code=400,
                             detail=f"Пользователя с переданным id - '{user_id}' не существует")
     return user_from_table
+

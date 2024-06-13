@@ -31,3 +31,4 @@ class RepairStatus(Enum):
     """Техническое состояния авто"""
     normal: str = "не требуется ремонт"
     need_repair: str = "требуется ремонт"
+

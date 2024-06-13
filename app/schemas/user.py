@@ -1,9 +1,7 @@
 import datetime
 import uuid
-from enum import Enum
 from typing import Union
-from pydantic import BaseModel, Field
-
+from pydantic import BaseModel
 from app.enums import Role, CarAccessType
 
 
@@ -37,9 +35,14 @@ class DriverCreateData(UserCreateData):
     role_name: Role = Role.driver
     car_access_type: CarAccessType
 
+class DriverDataFromDBResponse(DriverCreateData):
+    id: int
+
+
 class DriverCreateResponseData(UserCreateData):
     role_name: Role = Role.driver
     car_access_type: CarAccessType
+
 
 class AdminCreateData(UserCreateData):
     role_name: Role = Role.admin
@@ -48,9 +51,13 @@ class AdminCreateData(UserCreateData):
 class MechanicCreateData(UserCreateData):
     role_name: Role = Role.mechanic
 
+class MechanicCreateDataResponse(UserCreateData):
+    id: int
+
 class DriverUpdateData(BaseModel):
     username: str
     car_access_type: Union[CarAccessType, None]
+
 
 class UserUpdateFields(BaseModel):
     username: str
@@ -58,6 +65,7 @@ class UserUpdateFields(BaseModel):
     job_title: Union[str, None]
     date_of_employment: Union[datetime.date, None]
     date_of_dismissal: Union[datetime.date, None]
+
 
 class UserFromDB(BaseModel):
     id: int

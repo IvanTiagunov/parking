@@ -1,20 +1,17 @@
 from datetime import datetime
-from enum import Enum
 
-from sqlalchemy import DateTime, ForeignKey
+from sqlalchemy import ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.database import Base
+from app.enums import RepairStatus
 
-class InspectionResult(Enum):
-    ok: str = "Не требуется ремонт"
-    not_ok: str = "Требуется ремонт"
 
 class VehicleInspection(Base):
     """Технический осмотр транспортного средства"""
     __tablename__ = 'vehicle_inspection'
     id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
-    date: Mapped[DateTime] = mapped_column(default=datetime.now())
-    inspection_result: Mapped[InspectionResult] = mapped_column(default=InspectionResult.ok)
+    date: Mapped[datetime] = mapped_column(default=datetime.now())
+    inspection_result: Mapped[RepairStatus] = mapped_column(default=RepairStatus.normal)
     car_id: Mapped[int] = mapped_column(ForeignKey("car.id"))
-    mechanic_id = Mapped[int] = mapped_column(ForeignKey("mechanic.id"))
+    mechanic_id: Mapped[int] = mapped_column(ForeignKey("mechanic.id"))
