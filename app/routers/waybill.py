@@ -8,7 +8,6 @@ from app.crud.waybill import create_waybill_crud, get_list_waybill_crud, get_way
 from app.db.database import get_db
 from app.dependencies import check_rights
 from app.enums import Role, CarLocation
-from app.routers.user import get_user_by_name
 from app.schemas.vehicle_inspection import VehicleInspectionFull
 from app.schemas.waybill import WaybillDataCreate, WaybillDataFull, WaybillFromDB
 
@@ -23,7 +22,6 @@ async def create_waybill(user: get_us, waybill_data: WaybillDataCreate,
     waybill_user = get_user_by_login_crud(session, waybill_data.driver_username)
     driver = get_driver_by_user(session, waybill_user)
     waybill = create_waybill_crud(session, waybill_data, car=car, driver=driver)
-    x = 1
     return WaybillDataFull(id=waybill.id,
                            arrival=waybill.arrival,
                            departure=waybill.departure,
